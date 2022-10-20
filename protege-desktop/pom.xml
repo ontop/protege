@@ -18,6 +18,7 @@
 	<properties>
 		<conf.extra.args>-XX:CompileCommand=exclude,javax/swing/text/GlyphView,getBreakSpot</conf.extra.args>
 		<osx.bundle.name>Protégé.app</osx.bundle.name>
+		<maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
 	</properties>
 
 	<repositories>
@@ -91,10 +92,14 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.1</version>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>${maven-assembly-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>protege-desktop-assembly</id>
@@ -148,7 +153,7 @@
 					<plugin>
 						<groupId>com.akathist.maven.plugins.launch4j</groupId>
 						<artifactId>launch4j-maven-plugin</artifactId>
-						<version>1.7.10</version>
+						<version>2.1.2</version>
 						<executions>
 							<execution>
 								<configuration>
@@ -201,8 +206,9 @@
 
 
 					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.4</version>
+						<version>${maven-assembly-plugin.version}</version>
 						<executions>
 							<execution>
 								<id>protege-desktop-assembly</id>
