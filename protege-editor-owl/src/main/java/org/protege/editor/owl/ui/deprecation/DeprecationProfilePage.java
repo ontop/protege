@@ -54,7 +54,7 @@ public class DeprecationProfilePage extends AbstractOWLWizardPanel {
     private void setActiveSelected() {
         deprecationProfiles.forEach(profile -> {
             profile.getActivatedBy().ifPresent(activatedByIri -> {
-                Optional<IRI> ontologyIRI = getOWLModelManager().getActiveOntology().getOntologyID().getOntologyIRI();
+                java.util.Optional<IRI> ontologyIRI = getOWLModelManager().getActiveOntology().getOntologyID().getOntologyIRI();
                 if(ontologyIRI.isPresent()) {
                     if(ontologyIRI.get().equals(activatedByIri)) {
                         profilesCombo.setSelectedItem(profile);

@@ -185,7 +185,6 @@ public class OWLAnnotationEditor extends AbstractOWLObjectEditor<OWLAnnotation> 
         }
         EntitySearcher.getRanges(property,
                                  owlEditorKit.getOWLModelManager().getActiveOntology())
-                .stream()
                 .filter(OWL2Datatype::isBuiltIn)
                 .findFirst()
                 .map(OWL2Datatype::getDatatype)

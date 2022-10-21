@@ -19,6 +19,7 @@ import org.protege.editor.owl.ui.tree.OWLModelManagerTree;
 import org.protege.editor.owl.ui.tree.OWLObjectTree;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.util.OWLEntitySetProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +38,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.protege.editor.owl.ui.framelist.OWLFrameList.INFERRED_BG_COLOR;
 
@@ -158,9 +160,13 @@ public abstract class AbstractOWLEntityHierarchyViewComponent<E extends OWLEntit
             logger.error("An error occurred whilst getting the inferred hierarchy provider", e);
         }
 
+        List<E> check = assertedTree.getSelectedOWLObjects();
+        HashSet<E> check2 = new HashSet<>(check);
+        Set<E> check3 = check.stream().collect(Collectors.toSet());
+        
         hierarchyDeleter = new OWLObjectHierarchyDeleter<>(getOWLEditorKit(),
                                                            getHierarchyProvider(),
-                                                           () -> new HashSet<>(assertedTree.getSelectedOWLObjects()),
+                                                           () -> new HashSet<>(assertedTree.getSelectedOWLObjects()).stream(),
                                                            getCollectiveTypeName());
         listener = e -> transmitSelection();
         assertedTree.addTreeSelectionListener(listener);

@@ -1,10 +1,8 @@
 package org.protege.editor.owl.model.util;
 
 import org.semanticweb.owlapi.model.*;
-import org.semanticweb.owlapi.util.OWLObjectVisitorExAdapter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,7 +36,7 @@ public class OWLObjectRemover {
 
 
     private List<OWLOntologyChange> getChangesToRemoveObject(OWLObject object, final OWLOntology ontology) {
-        return object.accept(new OWLObjectVisitorExAdapter<List<OWLOntologyChange>>(Collections.emptyList()) {
+        return object.accept(new OWLObjectVisitorEx<List<OWLOntologyChange>>() {
             @Override
             public List<OWLOntologyChange> visit(OWLDatatype datatype) {
                 return getChangesForEntity(datatype, ontology);

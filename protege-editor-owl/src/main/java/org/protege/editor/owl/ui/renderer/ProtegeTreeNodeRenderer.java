@@ -7,7 +7,6 @@ import org.protege.editor.owl.ui.tree.OWLModelManagerTree;
 import org.protege.editor.owl.ui.tree.OWLObjectTreeNode;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.model.parameters.Imports;
-import org.semanticweb.owlapi.util.OWLObjectVisitorExAdapter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -197,13 +196,13 @@ public class ProtegeTreeNodeRenderer implements TreeCellRenderer {
      * An implementation of a visitor that can be used to determine if an object should be highlighted as being
      * in the active ontology.
      */
-    private static final class ActiveOntologyVisitor extends OWLObjectVisitorExAdapter<Boolean> {
+    private static final class ActiveOntologyVisitor implements OWLObjectVisitorEx<Boolean> {
 
         @Nonnull
         private final OWLModelManager modelManager;
 
         public ActiveOntologyVisitor(@Nonnull OWLModelManager modelManager) {
-            super(false);
+            super();
             this.modelManager = modelManager;
         }
 

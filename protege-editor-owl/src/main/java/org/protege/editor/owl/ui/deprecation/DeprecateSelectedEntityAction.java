@@ -9,15 +9,18 @@ import org.protege.editor.owl.model.entity.HomeOntologySupplier;
 import org.protege.editor.owl.ui.action.SelectedOWLEntityAction;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.parameters.Imports;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.manchester.cs.owl.owlapi.OWLOntologyManagerImpl;
 
 import java.io.IOException;
 import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashSet;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Matthew Horridge
@@ -58,11 +61,14 @@ public class DeprecateSelectedEntityAction extends SelectedOWLEntityAction {
                 state.getReasonForDeprecation(),
                 new HashSet<>(state.getAlternateEntities()),
                 state.getDeprecationCode().orElse(null));
+
+        ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
         EntityDeprecator<?> deprecator = new EntityDeprecator<>(info,
                                                                 wizard.getWizardState().getDeprecationProfile().get(),
                                                                 getOWLModelManager().getActiveOntologies(),
                                                                 new HomeOntologySupplier(),
-                                                                getOWLDataFactory());
+                                                                new OWLOntologyManagerImpl(getOWLDataFactory(), lock));
         getOWLModelManager().applyChanges(deprecator.getChanges());
         long referenceCount = getOWLModelManager().getActiveOntology().getReferencingAxioms(selectedEntity, Imports.INCLUDED).stream()
                                                   .filter(OWLAxiom::isLogicalAxiom)

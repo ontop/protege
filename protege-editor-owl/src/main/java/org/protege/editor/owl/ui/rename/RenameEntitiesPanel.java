@@ -281,7 +281,7 @@ public class RenameEntitiesPanel extends JPanel implements VerifiedInputEditor {
     
     private String getShortForm(IRI uri){
         try {
-            Optional<String> rendering = uri.getRemainder();
+            java.util.Optional<String> rendering = uri.getRemainder();
             if (!rendering.isPresent()) {
                 // Get last bit of path
                 String path = uri.toURI().getPath();

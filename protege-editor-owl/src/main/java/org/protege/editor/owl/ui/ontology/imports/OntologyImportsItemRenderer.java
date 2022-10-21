@@ -64,7 +64,7 @@ public class OntologyImportsItemRenderer extends PageCellRenderer {
                     IRI ontologyIRI = ontologyID.getOntologyIRI().get();
                     ontologyIriPara.append(ontologyIRI.toQuotedString(), foreground);
                     ontologyIriPara.setMarginTop(2);
-                    Optional<IRI> versionIRI = ontologyID.getVersionIRI();
+                    java.util.Optional<IRI> versionIRI = ontologyID.getVersionIRI();
                     if (versionIRI.isPresent()) {
                         Paragraph versionIriPara = page.addParagraph("Version IRI: ", Color.GRAY);
                         versionIriPara.setMarginLeft(40);

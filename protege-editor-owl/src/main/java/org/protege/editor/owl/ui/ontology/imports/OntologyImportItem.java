@@ -53,7 +53,7 @@ class OntologyImportItem implements MListItem {
         if(ont == null) {
             return Collections.emptyList();
         }
-        Optional<IRI> defaultDocumentIRI = ont.getOntologyID().getDefaultDocumentIRI();
+        java.util.Optional<IRI> defaultDocumentIRI = ont.getOntologyID().getDefaultDocumentIRI();
         if (Optional.of(decl.getIRI()).equals(defaultDocumentIRI)) {
             return Collections.emptyList();
         }
@@ -74,7 +74,7 @@ class OntologyImportItem implements MListItem {
             final OWLModelManager mngr = eKit.getOWLModelManager();
             OWLOntology impOnt = mngr.getOWLOntologyManager().getImportedOntology(decl);
             if (impOnt != null) {
-                Optional<IRI> defaultDocumentIRI = impOnt.getOntologyID().getDefaultDocumentIRI();
+                java.util.Optional<IRI> defaultDocumentIRI = impOnt.getOntologyID().getDefaultDocumentIRI();
                 if (defaultDocumentIRI.isPresent()) {
                     changes.add(new AddImport(ont, mngr.getOWLDataFactory().getOWLImportsDeclaration(defaultDocumentIRI.get())));
                     mngr.applyChanges(changes);

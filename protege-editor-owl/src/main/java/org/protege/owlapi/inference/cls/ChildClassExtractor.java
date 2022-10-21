@@ -2,7 +2,6 @@ package org.protege.owlapi.inference.cls;
 
 import com.google.common.collect.ImmutableSet;
 import org.semanticweb.owlapi.model.*;
-import org.semanticweb.owlapi.util.OWLAxiomVisitorAdapter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -11,7 +10,7 @@ import java.util.*;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 
-public class ChildClassExtractor extends OWLAxiomVisitorAdapter {
+public class ChildClassExtractor implements OWLAxiomVisitor {
 
 
     private NamedConjunctChecker checker = new NamedConjunctChecker();

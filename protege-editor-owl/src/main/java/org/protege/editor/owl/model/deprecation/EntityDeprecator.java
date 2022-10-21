@@ -5,7 +5,7 @@ import org.protege.editor.owl.model.entity.HomeOntologySupplier;
 import org.protege.editor.owl.model.util.DefinitionExtractor;
 import org.protege.editor.owl.model.util.LiteralLexicalValueReplacer;
 import org.semanticweb.owlapi.model.*;
-import org.semanticweb.owlapi.util.AxiomSubjectProvider;
+import org.semanticweb.owlapi.util.AxiomSubjectProviderEx;
 import org.semanticweb.owlapi.util.OWLObjectDuplicator;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 import org.slf4j.Logger;
@@ -27,7 +27,8 @@ public class EntityDeprecator<E extends OWLEntity> {
     private static Logger logger = LoggerFactory.getLogger(EntityDeprecator.class);
 
     @Nonnull
-    private final OWLDataFactory dataFactory;
+    private final OWLOntologyManager manager;
+    //private final OWLDataFactory dataFactory;
 
     @Nonnull
     private final Set<OWLOntology> ontologies = new HashSet<>();
@@ -45,8 +46,8 @@ public class EntityDeprecator<E extends OWLEntity> {
                             @Nonnull DeprecationProfile profile,
                             @Nonnull Set<OWLOntology> ontologies,
                             @Nonnull HomeOntologySupplier homeOntologySupplier,
-                            @Nonnull OWLDataFactory dataFactory) {
-        this.dataFactory = checkNotNull(dataFactory);
+                            @Nonnull OWLOntologyManager manager) {
+        this.manager = checkNotNull(manager);
         this.profile = checkNotNull(profile);
         this.homeOntologySupplier = checkNotNull(homeOntologySupplier);
         this.ontologies.addAll(ontologies);
@@ -84,10 +85,10 @@ public class EntityDeprecator<E extends OWLEntity> {
      * @param changes A list of changes that the enacting change will be added to.
      */
     private void addDeprecatedAnnotationAssertion(@Nonnull List<OWLOntologyChange> changes) {
-        OWLAnnotationAxiom ax = dataFactory.getOWLAnnotationAssertionAxiom(
-                dataFactory.getOWLDeprecated(),
+        OWLAnnotationAxiom ax = manager.getOWLDataFactory().getOWLAnnotationAssertionAxiom(
+                manager.getOWLDataFactory().getOWLDeprecated(),
                 info.getEntityToDeprecate().getIRI(),
-                dataFactory.getOWLLiteral(true)
+                manager.getOWLDataFactory().getOWLLiteral(true)
         );
         logger.info("[Deprecate Entity] Added owl:deprecated annotation");
         changes.add(new AddAxiom(getHomeOntology(), ax));
@@ -107,7 +108,7 @@ public class EntityDeprecator<E extends OWLEntity> {
         ontologies.forEach(o -> {
             DefinitionExtractor definitionExtractor = new DefinitionExtractor(info.getEntityToDeprecate(),
                                                                               o,
-                                                                              dataFactory);
+                                                                              manager.getOWLDataFactory());
             changes.addAll(definitionExtractor.getChangesToRemoveDefinition());
         });
         logger.info("[Deprecate Entity] Removed deprecated entity logical definition");
@@ -143,7 +144,7 @@ public class EntityDeprecator<E extends OWLEntity> {
         String replacement = replacementPrefix + "$0";
         logger.info("[Deprecate Entity] Relabelled deprecated entity");
         replaceAnnotationAssertions(changes,
-                                    singleton(dataFactory.getRDFSLabel().getIRI()),
+                                    singleton(manager.getOWLDataFactory().getRDFSLabel().getIRI()),
                                     replacement);
     }
 
@@ -183,10 +184,10 @@ public class EntityDeprecator<E extends OWLEntity> {
             return;
         }
         profile.getDeprecationTextualReasonAnnotationPropertyIri().ifPresent(propIri -> {
-            OWLAnnotationAssertionAxiom ax = dataFactory.getOWLAnnotationAssertionAxiom(
-                    dataFactory.getOWLAnnotationProperty(propIri),
+            OWLAnnotationAssertionAxiom ax = manager.getOWLDataFactory().getOWLAnnotationAssertionAxiom(
+                    manager.getOWLDataFactory().getOWLAnnotationProperty(propIri),
                     info.getEntityToDeprecate().getIRI(),
-                    dataFactory.getOWLLiteral(reasonForDeprecation, OWL2Datatype.XSD_STRING)
+                    manager.getOWLDataFactory().getOWLLiteral(reasonForDeprecation, OWL2Datatype.XSD_STRING)
             );
             logger.info("[Deprecate Entity] Added reason for deprecation as an annotation on the deprecated entity");
             changes.add(new AddAxiom(getHomeOntology(), ax));
@@ -196,8 +197,8 @@ public class EntityDeprecator<E extends OWLEntity> {
     private void addDeprecationCode(List<OWLOntologyChange> changes) {
         profile.getDeprecationCode().ifPresent(deprecationCode -> {
             info.getDeprecationCode().ifPresent(selectedCode -> {
-                OWLAnnotationAxiom ax = dataFactory.getOWLAnnotationAssertionAxiom(
-                        dataFactory.getOWLAnnotationProperty(deprecationCode.getPropertyIri()),
+                OWLAnnotationAxiom ax = manager.getOWLDataFactory().getOWLAnnotationAssertionAxiom(
+                        manager.getOWLDataFactory().getOWLAnnotationProperty(deprecationCode.getPropertyIri()),
                         info.getEntityToDeprecate().getIRI(),
                         selectedCode
                 );
@@ -214,8 +215,8 @@ public class EntityDeprecator<E extends OWLEntity> {
     private void addReplacedByAnnotation(List<OWLOntologyChange> changes) {
         info.getReplacementEntity().ifPresent(replacementEntity -> {
             profile.getReplacedByAnnotationPropertyIri().ifPresent(propIri -> {
-                OWLAxiom ax = dataFactory.getOWLAnnotationAssertionAxiom(
-                        dataFactory.getOWLAnnotationProperty(propIri),
+                OWLAxiom ax = manager.getOWLDataFactory().getOWLAnnotationAssertionAxiom(
+                        manager.getOWLDataFactory().getOWLAnnotationProperty(propIri),
                         info.getEntityToDeprecate().getIRI(),
                         replacementEntity.getIRI()
                 );
@@ -233,8 +234,8 @@ public class EntityDeprecator<E extends OWLEntity> {
     private void addAlternateEntityAnnotations(List<OWLOntologyChange> changes) {
         profile.getAlternateEntityAnnotationPropertyIri().ifPresent(property -> {
             info.getAlternateEntities().forEach(alternate -> {
-                OWLAxiom ax = dataFactory.getOWLAnnotationAssertionAxiom(
-                        dataFactory.getOWLAnnotationProperty(property),
+                OWLAxiom ax = manager.getOWLDataFactory().getOWLAnnotationAssertionAxiom(
+                        manager.getOWLDataFactory().getOWLAnnotationProperty(property),
                         info.getEntityToDeprecate().getIRI(),
                         alternate.getIRI()
                 );
@@ -251,7 +252,7 @@ public class EntityDeprecator<E extends OWLEntity> {
      */
     private void reparentDeprecatedEntity(List<OWLOntologyChange> changes) {
         E deprecatedEntity = info.getEntityToDeprecate();
-        Optional<OWLAxiom> ax = deprecatedEntity.accept(new ReparentVisitor(profile, dataFactory));
+        Optional<OWLAxiom> ax = deprecatedEntity.accept(new ReparentVisitor(profile, manager.getOWLDataFactory()));
         ax.map(axiom -> new AddAxiom(getHomeOntology(), axiom)).ifPresent(changes::add);
     }
 
@@ -266,13 +267,13 @@ public class EntityDeprecator<E extends OWLEntity> {
         info.getReplacementEntity().ifPresent(replacementEntity -> {
             Map<OWLEntity, IRI> replacementMap = new HashMap<>();
             replacementMap.put(info.getEntityToDeprecate(), replacementEntity.getIRI());
-            OWLObjectDuplicator duplicator = new OWLObjectDuplicator(replacementMap, dataFactory);
+            OWLObjectDuplicator duplicator = new OWLObjectDuplicator(replacementMap, manager);
             ontologies.forEach(o -> {
                 o.getReferencingAxioms(info.getEntityToDeprecate()).stream()
                  // Only replace the entity in logical axioms - annotations remain on the deprecated entity
                  .filter(OWLAxiom::isLogicalAxiom)
                  // Don't replace axioms that define the entity to be deprecated
-                 .filter(ax -> !new AxiomSubjectProvider().getSubject(ax).equals(info.getEntityToDeprecate()))
+                 .filter(ax -> !new AxiomSubjectProviderEx().getSubject(ax).equals(info.getEntityToDeprecate()))
                  .forEach(ax -> {
                      OWLAxiom replacementAx = duplicator.duplicateObject(ax);
                      changes.add(new RemoveAxiom(o, ax));
@@ -293,10 +294,10 @@ public class EntityDeprecator<E extends OWLEntity> {
              .forEach(ax -> {
                  changes.add(new RemoveAxiom(o, ax));
                  OWLLiteral currentLiteral = ax.getValue().asLiteral().get();
-                 OWLLiteral replacementLiteral = new LiteralLexicalValueReplacer(dataFactory).replaceLexicalValue(
+                 OWLLiteral replacementLiteral = new LiteralLexicalValueReplacer(manager.getOWLDataFactory()).replaceLexicalValue(
                          currentLiteral,
                          replacement);
-                 OWLAxiom replacementAx = dataFactory.getOWLAnnotationAssertionAxiom(
+                 OWLAxiom replacementAx = manager.getOWLDataFactory().getOWLAnnotationAssertionAxiom(
                          ax.getProperty(),
                          ax.getSubject(),
                          replacementLiteral,

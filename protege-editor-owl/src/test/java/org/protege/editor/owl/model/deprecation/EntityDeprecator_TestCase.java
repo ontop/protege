@@ -10,10 +10,12 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.util.DefaultPrefixManager;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLOntologyManagerImpl;
 
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -117,11 +119,13 @@ public class EntityDeprecator_TestCase {
                 THE_DEPRECATION_REASON,
                 Collections.singleton(alternateCls),
                 null);
+
+        ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
         entityDeprecator = new EntityDeprecator<>(info,
                                                   deprecationProfile,
                                                   ontologies,
                                                   new HomeOntologySupplier(),
-                                                  dataFactory);
+                                                  new OWLOntologyManagerImpl(dataFactory, lock));
     }
 
     private void performDeprecation() {

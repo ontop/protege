@@ -41,7 +41,7 @@ public class OWLOntologyCellRenderer extends DefaultListCellRenderer {
             label.setIcon(editorKit.getWorkspace().getOWLIconProvider().getIcon((OWLOntology) value));
         }
         else if (value instanceof IRI) {
-            label.setText(getOntologyLabelText(Optional.of((IRI)value), editorKit.getModelManager()));
+            label.setText(getOntologyLabelText(java.util.Optional.of((IRI)value), editorKit.getModelManager()));
         }
         return label;
     }
@@ -52,12 +52,12 @@ public class OWLOntologyCellRenderer extends DefaultListCellRenderer {
             return ont.getOntologyID().toString();
         }
 
-        final Optional<IRI> iri = ont.getOntologyID().getDefaultDocumentIRI();
+        java.util.Optional<IRI> iri = ont.getOntologyID().getDefaultDocumentIRI();
 
         return getOntologyLabelText(iri, mngr);
     }
 
-    public static String getOntologyLabelText(Optional<IRI> iri, OWLModelManager mngr) {
+    public static String getOntologyLabelText(java.util.Optional<IRI> iri, OWLModelManager mngr) {
 
         StringBuilder sb = new StringBuilder();
         sb.append("<html><body>");

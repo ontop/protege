@@ -188,12 +188,12 @@ public class OntologyIDPanel extends AbstractWizardPanel {
 
             String ontologyVersionIRIString = getOntologyVersionIRIString();
             if(ontologyVersionIRIString.isEmpty()) {
-                return new OWLOntologyID(Optional.of(ontologyIRI), Optional.<IRI>absent());
+                return new OWLOntologyID(java.util.Optional.of(ontologyIRI), java.util.Optional.empty());
             }
             else {
                 URI versionURI = new URI(ontologyVersionIRIString);
                 IRI versionIRI = IRI.create(versionURI);
-                return new OWLOntologyID(Optional.of(ontologyIRI), Optional.of(versionIRI));
+                return new OWLOntologyID(java.util.Optional.of(ontologyIRI), java.util.Optional.of(versionIRI));
             }
         } catch (URISyntaxException e) {
             return null;
