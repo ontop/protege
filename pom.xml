@@ -144,7 +144,7 @@
 			<dependency>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>org.apache.felix.main</artifactId>
-				<version>7.0.0</version>
+				<version>6.0.1</version>
 			</dependency>
 
 			<dependency>
@@ -206,7 +206,7 @@
 				<artifactId>org.eclipse.equinox.registry</artifactId>
 				<version>3.5.0.v20100503</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.eclipse.equinox</groupId>
 				<artifactId>org.eclipse.equinox.supplement</artifactId>
@@ -252,11 +252,11 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.eclipse.jgit</groupId>
 				<artifactId>org.eclipse.jgit</artifactId>
-				<version>5.0.0.201806131550-r</version>
+				<version>6.3.0.202209071007-r</version>
 			</dependency>
 
 			<dependency>
@@ -390,7 +390,11 @@
 					<configuration>
 						<instructions>							
 							<Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
-							<Embed-Directory>${lib.location}</Embed-Directory>							
+							<Embed-Directory>${lib.location}</Embed-Directory>
+							<Embed-Dependency>
+								slf4j-api;scope=compile,
+								log4j;scope=compile
+							</Embed-Dependency>
 						</instructions>
 					</configuration>
 				</plugin>

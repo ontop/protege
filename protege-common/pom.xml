@@ -40,6 +40,10 @@
 				<configuration>
 					<instructions>
 						<Bundle-Activator>org.protege.common.Activator</Bundle-Activator>
+						<Embed-Dependency>
+							slf4j-api;scope=compile,
+							log4j;scope=compile
+						</Embed-Dependency>
 						<Bundle-ClassPath>.</Bundle-ClassPath>
 						<Bundle-SymbolicName>org.protege.common</Bundle-SymbolicName>
 						<Export-Package>
@@ -52,6 +56,7 @@
 							!javax.jmdns,
 							!com.sun.*,
 							sun.misc;resolution:=optional,
+							org.slf4j.*,
 							*
 						</Import-Package>
 					</instructions>
